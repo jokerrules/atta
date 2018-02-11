@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+	<Properties>
+		<Property name="filePathInfo">logs/app/info.log</Property>
+		<Property name="filePathDebug">logs/app/debug.log</Property>
+		<Property name="filePathError">logs/app/error.log</Property>
+	</Properties>
+
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="%d{yyyy-MM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+
+		<!-- Rolling Error File Appender -->
+		<RollingFile name="ErrorRollingFile">
+			<FileName>${filePathError}</FileName>
+			<FilePattern>${filePathError}-%d{yyyy-MM-dd}
+			</FilePattern>
+			<PatternLayout>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" />
+			</Policies>
+			<DefaultRolloverStrategy max="30" />
+		</RollingFile>
+
+		<RollingFile name="InfoRollingFile">
+			<FileName>${filePathInfo}</FileName>
+			<FilePattern>${filePathInfo}-%d{yyyy-MM-dd}
+			</FilePattern>
+			<PatternLayout>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" />
+			</Policies>
+			<DefaultRolloverStrategy max="30" />
+		</RollingFile>
+
+		<RollingFile name="DebugRollingFile">
+			<FileName>${filePathDebug}</FileName>
+			<FilePattern>${filePathDebug}-%d{yyyy-MM-dd}
+			</FilePattern>
+			<PatternLayout>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" />
+			</Policies>
+			<DefaultRolloverStrategy max="30" />
+		</RollingFile>
+	</Appenders>
+
+	<Loggers>
+		<Root level="ALL">
+			<AppenderRef ref="Console" level="ALL" />
+			<AppenderRef ref="ErrorRollingFile" level="ERROR" />
+			<AppenderRef ref="DebugRollingFile" level="DEBUG" />
+			<AppenderRef ref="InfoRollingFile" level="INFO" />
+		</Root>
+
+		<Logger name="org.assassin.jr.attabot.service.network.HttpRequestHelper" level="OFF"
+			additivity="false">
+		</Logger>
+	</Loggers>
+</Configuration>

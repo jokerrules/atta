@@ -1,0 +1,246 @@
+{
+	"common": {
+		"updateTime"				: 60000,
+		"corePoolSize"				: 9,
+		"managementMaxBackupFiles"	: 9,
+		"managementProfitDisplayDay": 3,
+		"managementProfitSavePath"	: "profits-management/pp.json",
+		"managementOrderdSavePath"	: "orders-management/pl.json",
+		"logDir"					: "logs/",
+		"marketApiKey"				: 	{
+											"BITTREX"	: {
+															"apiKey"		: "11111",
+															"apiKeySerect"	: "2222"
+														},
+											"BINANCE"	: {
+															"apiKey"		: "1111",
+															"apiKeySerect"	: "22222"
+														}
+										}
+	},
+	"currencies": [
+		{
+			"exchangeMarket": "BITTREX",
+			"id"			: "BTC-XLM-bb-1",
+			"isActive"		: false,
+			"market"		: "BTC-XLM",
+			"budget"		: 0.0005,
+			"debutBid"		: 0.00004581,
+			"playOptions"	:	{
+									"typeName"			: "BOLLINGER_BAND",
+									"length"			: 20,
+									"standardDeviation"	: 2,
+									"rangeRate"			: 0.01,
+									"isUseFlipSign"		: false
+								}
+		},
+		{
+			"exchangeMarket": "BITTREX",
+			"id"			: "BTC-ETH-overlap-1",
+			"isActive"		: true,
+			"market"		: "BTC-ETH",
+			"budget"		: 0.005,
+			"profitRate"	: 0.05,
+			"reBidRate"		: 0.023809,
+			"debutBid"		: 0.10493752
+		},
+		{
+			"exchangeMarket": "BITTREX",
+			"id"			: "BTC-XVG-bb-1",
+			"isActive"		: false,
+			"market"		: "BTC-XVG",
+			"budget"		: 0.0005,
+			"debutBid"		: 0.00000780,
+			"playOptions"	:	{
+									"typeName"			: "BOLLINGER_BAND",
+									"length"			: 20,
+									"standardDeviation"	: 2,
+									"rangeRate"			: 0.001,
+									"isUseFlipSign"		: false
+								}
+		},
+		
+		{
+			"exchangeMarket": "BINANCE",
+			"id"			: "NEO-overlap-1",
+			"isActive"		: false,
+			"market"		: "NEOBTC",
+			"budget"		: 0.0025295,
+			"debutBid"		: 0.013795,
+			"quantityRound"	: 2,
+			"priceRound"	: 6,
+			"playOptions"	:	{
+									"typeName"			: "BOLLINGER_BAND",
+									"length"			: 20,
+									"standardDeviation"	: 2,
+									"rangeRate"			: 0.001,
+									"isUseFlipSign"		: false
+								}
+		},
+		{
+			"exchangeMarket": "BINANCE",
+			"id"			: "ADA-bb-1",
+			"isActive"		: false,
+			"market"		: "ADABTC",
+			"budget"		: 0.0025295,
+			"debutBid"		: 0.00005055,
+			"quantityRound"	: 0,
+			"playOptions"	:	{
+									"typeName"			: "BOLLINGER_BAND",
+									"length"			: 20,
+									"standardDeviation"	: 2,
+									"rangeRate"			: 0.001,
+									"isUseFlipSign"		: false
+								}
+		},
+		{
+			"exchangeMarket": "BINANCE",
+			"id"			: "ICX-overlap-1",
+			"isActive"		: false,
+			"market"		: "ICXBTC",
+			"budget"		: 0.0025295,
+			"profitRate"	: 0.05,
+			"reBidRate"		: 0.023809,
+			"debutBid"		: 0.0008150,
+			"quantityRound"	: 2,
+			"priceRound"	: 7
+		},
+		{
+			"exchangeMarket": "BINANCE",
+			"id"			: "BN-XRP-overlap-1",
+			"isActive"		: false,
+			"market"		: "XRPBTC",
+			"budget"		: 0.00283735,
+			"debutBid"		: 0.00010830,
+			"quantityRound"	: 0,
+			"priceRound"	: 8,
+			"playOptions"	:	{
+									"typeName"			: "BOLLINGER_BAND",
+									"length"			: 20,
+									"standardDeviation"	: 2,
+									"rangeRate"			: 0.001,
+									"isUseFlipSign"		: false
+								}
+		},
+		{
+			"exchangeMarket": "BINANCE",
+			"id"			: "BN-ETH-BB-01",
+			"isActive"		: true,
+			"market"		: "ETHBTC",
+			"budget"		: 0.002,
+			"debutBid"		: 0.099703,
+			"quantityRound"	: 3,
+			"priceRound"	: 6,
+			"playOptions"	:	{
+									"typeName"			: "BOLLINGER_BAND",
+									"length"			: 20,
+									"standardDeviation"	: 2,
+									"rangeRate"			: 0.001,
+									"isUseFlipSign"		: false
+								}
+		},
+		{
+			"exchangeMarket": "BINANCE",
+			"id"			: "BN-ETH-OL-01",
+			"isActive"		: true,
+			"market"		: "ETHBTC",
+			"budget"		: 0.003,
+			"profitRate"	: 0.05,
+			"reBidRate"		: 0.023809,
+			"debutBid"		: 0.101178,
+			"quantityRound"	: 3,
+			"priceRound"	: 6
+		},
+		{
+			"exchangeMarket": "BINANCE",
+			"id"			: "BN-ETH-FRZ-AT",
+			"isActive"		: true,
+			"market"		: "ETHBTC",
+			"budget"		: 0.0044,
+			"quantityRound"	: 3,
+			"priceRound"	: 6,
+			"updateTime"	: 3100,
+			"playOptions"	:	{ "typeName" : "FREEZE" },
+			"fragment"		: 	{
+									"prefixId"		: "1802091026",
+									"profits"		: [0.0007, 0.001, 0.002, 0.005],
+									"bidRates"		: [0.0007, 0.001, 0.002, 0.005],
+									"avgPrice"		: 0.100571,
+									"fragmentType"	: "BID_PERCENT"
+								}
+		},
+		{
+			"exchangeMarket": "BINANCE",
+			"id"			: "BN-ETH-FRZ-AT2",
+			"isActive"		: true,
+			"market"		: "ETHBTC",
+			"budget"		: 0.0022,
+			"quantityRound"	: 3,
+			"priceRound"	: 6,
+			"updateTime"	: 3200,
+			"playOptions"	:	{ "typeName" : "FREEZE" },
+			"fragment"		: 	{
+									"prefixId"		: "1802091026",
+									"profits"		: [0.0007, 0.005],
+									"bidRates"		: [0.0007, 0.005],
+									"avgPrice"		: 0.101429,
+									"fragmentType"	: "BID_PERCENT"
+								}
+		},
+		{
+			"exchangeMarket": "BINANCE",
+			"id"			: "BN-ETH-FRZ-AT3",
+			"isActive"		: true,
+			"market"		: "ETHBTC",
+			"budget"		: 0.0022,
+			"quantityRound"	: 3,
+			"priceRound"	: 6,
+			"updateTime"	: 3200,
+			"playOptions"	:	{ "typeName" : "FREEZE" },
+			"fragment"		: 	{
+									"prefixId"		: "1802091026",
+									"profits"		: [0.0008, 0.005],
+									"bidRates"		: [0.0008, 0.007],
+									"avgPrice"		: 0.100089,
+									"fragmentType"	: "BID_PERCENT"
+								}
+		},
+		{
+			"exchangeMarket": "BINANCE",
+			"id"			: "BN-ETH-FRZ-AT4",
+			"isActive"		: true,
+			"market"		: "ETHBTC",
+			"budget"		: 0.01,
+			"quantityRound"	: 3,
+			"priceRound"	: 6,
+			"updateTime"	: 3210,
+			"playOptions"	:	{ "typeName" : "FREEZE" },
+			"fragment"		: 	{
+									"prefixId"		: "1802110121",
+									"profits"		: [0.0008, 0.001, 0.003, 0.005, 0.008],
+									"bidRates"		: [0.0008, 0.001, 0.001, 0.002, 0.003],
+									"avgPrice"		: 0.10029,
+									"fragmentType"	: "BID_PERCENT"
+								}
+		},
+		{
+			"exchangeMarket": "BINANCE",
+			"id"			: "BN-ETH-FRZ-TEST-STOP",
+			"isActive"		: false,
+			"market"		: "ETHBTC",
+			"budget"		: 0.012,
+			"quantityRound"	: 3,
+			"priceRound"	: 6,
+			"updateTime"	: 3210,
+			"playOptions"	:	{ "typeName" : "FREEZE" },
+			"fragment"		: 	{
+									"prefixId"		: "1802110121",
+									"profits"		: [0.0008],
+									"bidRates"		: [0.0008],
+									"bidRatesCond"	: [0.0005],
+									"avgPrice"		:  0.10050,
+									"fragmentType"	: "BID_PERCENT"
+								}
+		}
+	]
+}
