@@ -24,7 +24,7 @@ public class LoggerRollingDate implements LoggerStandard {
 	private boolean isOuputConsole = false;
 
 	private enum LogLevel {
-		DEBUG("debug", 0), INFO("info", 1), ERROR("error", 2);
+		DEBUG("debug", 0), INFO("info", 1), WARN("warn", 2), ERROR("error", 3);
 
 		private String levelName;
 		private int level;
@@ -58,6 +58,7 @@ public class LoggerRollingDate implements LoggerStandard {
 	private File logFileDebug;
 	private File logFileInfo;
 	private File logFileError;
+	private File logFileWarn;
 	private String beginDateWriteLog;
 	private SimpleDateFormat dateFormatter;
 	private SimpleDateFormat dateTimeFormatter;
@@ -66,26 +67,37 @@ public class LoggerRollingDate implements LoggerStandard {
 		this.logFileDebug = new File(String.format(PATTERN_LOG_FILE_PATH, filePath, LogLevel.DEBUG));
 		this.logFileInfo = new File(String.format(PATTERN_LOG_FILE_PATH, filePath, LogLevel.INFO));
 		this.logFileError = new File(String.format(PATTERN_LOG_FILE_PATH, filePath, LogLevel.ERROR));
+		this.logFileWarn = new File(String.format(PATTERN_LOG_FILE_PATH, filePath, LogLevel.WARN));
 		dateFormatter = new SimpleDateFormat(FORMATTER_DATE);
 		dateTimeFormatter = new SimpleDateFormat(FORMATTER_DATE_TIME);
 		beginDateWriteLog = getCurrentDate();
 	}
 
+	@Override
 	public void debug(String message) {
 		createFileIfNotExists(logFileDebug);
 		writeLogByLevelWay(LogLevel.DEBUG, message);
 	}
 
-	public void info(String massage) {
+	@Override
+	public void info(String message) {
 		createFileIfNotExists(logFileInfo);
-		writeLogByLevelWay(LogLevel.INFO, massage);
+		writeLogByLevelWay(LogLevel.INFO, message);
 	}
 
+	@Override
+	public void warn(String message) {
+		createFileIfNotExists(logFileWarn);
+		writeLogByLevelWay(LogLevel.WARN, message);
+	}
+
+	@Override
 	public void error(String message) {
 		createFileIfNotExists(logFileError);
 		writeLogByLevelWay(LogLevel.ERROR, message);
 	}
 
+	@Override
 	public void error(Exception e) {
 		createFileIfNotExists(logFileError);
 		writeLogByLevelWay(LogLevel.ERROR, AttaUtility.getStackTraceMessage(e));
@@ -97,6 +109,8 @@ public class LoggerRollingDate implements LoggerStandard {
 			return logFileDebug;
 		case INFO:
 			return logFileInfo;
+		case WARN:
+			return logFileWarn;
 		case ERROR:
 			return logFileError;
 		}

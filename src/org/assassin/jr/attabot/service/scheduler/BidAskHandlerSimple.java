@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.assassin.jr.attabot.config.CurrencySetting;
 import org.assassin.jr.attabot.exception.ExchangeServiceRequestFailException;
 import org.assassin.jr.attabot.pojo.exchange.IOrder;
+import org.assassin.jr.attabot.pojo.exchange.ITicker;
 import org.assassin.jr.attabot.pojo.exchange.OrderCategory;
 import org.assassin.jr.attabot.service.exchange.ExchangeMarketService;
 import org.assassin.jr.attabot.service.exchange.ExchangeServiceHandler;
@@ -32,9 +33,14 @@ public class BidAskHandlerSimple implements BidAskHandler {
 
 	@Override
 	public void handleOrder(CurrencySetting currencySetting, ExchangeServiceHandler exchangeService, PredictorStandard predictor) throws Exception {
+		if (!currencySetting.isActive()) {
+			return;
+		}
+		
 		ExchangePredictorWrapper exchangePredictor = predictor.getPreictorWrapper(currencySetting.getPlayOptions());
 
 		IOrder currentOrder = null;
+		PredictParams predictParams;
 		OrderStored orderInfo = orderManagement.getOrder(currencySetting.getId());
 		String currentOrderUuid = orderInfo == null ? null : orderInfo.getUuid();
 
@@ -43,14 +49,25 @@ public class BidAskHandlerSimple implements BidAskHandler {
 			currentOrder = exchangeService.getAccountService().getOrder(currencySetting.getMarket(), currentOrderUuid);
 		}
 
+		boolean isWillCancelBidOrder = currentOrder != null && !currentOrder.isOrderCompleted() && currentOrder.isBuyOrder() && currencySetting.isCancelBidOrder();
+		if (currencySetting.isCancelAllOrders() || isWillCancelBidOrder) {
+			cancel(currencySetting, exchangeService, currentOrder);
+			currencySetting.setActive(false);
+			return;
+		}
+
 		// in case buying order status is cancelled or order UUID doesn't exist in order management, we force buy again
-		if (currentOrder == null || (currentOrder.isOrdercancelled() && currentOrder.isBuyOrder())) {
-			forceBuyNow(exchangePredictor, currencySetting, exchangeService, predictor.createPredictParam(exchangeService, currencySetting));
+		boolean isFirstTimeOrder = currentOrder == null;
+		boolean isBuyOrderWasCanceled = currentOrder != null && currentOrder.isOrdercancelled() && currentOrder.isBuyOrder();
+		if (isFirstTimeOrder || isBuyOrderWasCanceled) {
+			predictParams = createPredictorParams(currencySetting, exchangeService, predictor, currentOrder);
+			forceBuyNow(exchangePredictor, currencySetting, exchangeService, predictParams);
 			return;
 		}
 
 		// in case selling order status is cancelled, we force sell again
-		if (currentOrder.isOrdercancelled() && currentOrder.isSellOrder()) {
+		boolean isSellOrderWasCancelled = currentOrder.isOrdercancelled() && currentOrder.isSellOrder();
+		if (isSellOrderWasCancelled) {
 			sellLimit(exchangeService.getMarketService(), currencySetting, orderInfo.getQuantiy(), orderInfo.getPrice(), currentOrder);
 		}
 
@@ -58,9 +75,7 @@ public class BidAskHandlerSimple implements BidAskHandler {
 			return;
 		}
 
-		PredictParams predictParams = predictor.createPredictParam(exchangeService, currencySetting);
-		predictParams.setCurrentOrder(currentOrder);
-		predictParams.setCurrency(currencySetting);
+		predictParams = createPredictorParams(currencySetting, exchangeService, predictor, currentOrder);
 
 		if (currentOrder.isBuyOrder()) {
 			sell(exchangePredictor, currencySetting, exchangeService, predictParams);
@@ -70,13 +85,39 @@ public class BidAskHandlerSimple implements BidAskHandler {
 		buy(exchangePredictor, currencySetting, exchangeService, predictParams);
 	}
 
+	private PredictParams createPredictorParams(CurrencySetting currencySetting, ExchangeServiceHandler exchangeService, PredictorStandard predictor, IOrder currentOrder) throws ExchangeServiceRequestFailException {
+		PredictParams predictParams = predictor.createPredictParam(exchangeService, currencySetting);
+
+		ITicker ticker = exchangeService.getPublicService().getTicker(currencySetting.getMarket());
+		predictParams.setTicker(ticker);
+		predictParams.setCurrency(currencySetting);
+		predictParams.setCurrentOrder(currentOrder);
+
+		return predictParams;
+	}
+
+	private void cancel(CurrencySetting currency, ExchangeServiceHandler exchangeService, IOrder currentOrder) throws ExchangeServiceRequestFailException {
+		if (currentOrder == null || currentOrder.isOrdercancelled()) {
+			return;
+		}
+
+		AttaUtility.writeLogInfo(logger, currency, String.format("Begin cancel order : %s", currentOrder));
+		exchangeService.getMarketService().cancel(currency.getMarket(), currentOrder.getOrderUuid());
+		AttaUtility.writeLogInfo(logger, currency, String.format("End   cancel order : %s", currentOrder));
+	}
+
 	private void sell(ExchangePredictorWrapper exchangePredictor, CurrencySetting currency, ExchangeServiceHandler exchangeService, PredictParams predictParams) throws ExchangeServiceRequestFailException {
 		IOrder currentOrder = predictParams.getCurrentOrder();
 
 		double askPrice = exchangePredictor.getAskPredictor().predict(predictParams);
 
 		// give up when ask price is invalid or last bid price >= current ask price
-		if (askPrice < 0 || currentOrder.getLimit() >= askPrice) {
+		if (askPrice < 0) {
+			return;
+		}
+
+		if (currentOrder.getLimit() >= askPrice) {
+			AttaUtility.writeLogWarn(logger, currency, String.format("[Unexpect] Last buy price >= sell price.[%f >= %f]; %s", currentOrder.getLimit(), askPrice, currentOrder));
 			return;
 		}
 
@@ -91,12 +132,12 @@ public class BidAskHandlerSimple implements BidAskHandler {
 		askPrice = AttaMath.roundPrice(currency, askPrice);
 
 		if (quantity * askPrice <= currentOrder.getLimit() * currentOrder.getQuantity()) {
-			AttaUtility.writeLogInfo(logger, currency, String.format("Total sell price < last buy price. askPrice=%.8f askQty=%.8f ; bidPrice=%.8f bidQty=%.8f  ", askPrice, quantity, currentOrder.getLimit(), currentOrder.getQuantity()));
+			AttaUtility.writeLogWarn(logger, currency, String.format("[Unexpect] Total sell price < last buy price. askPrice=%.8f askQty=%.8f ; bidPrice=%.8f bidQty=%.8f; %s", askPrice, quantity, currentOrder.getLimit(), currentOrder.getQuantity(), currentOrder));
 
 			askPrice = askPrice * (currentOrder.getQuantity() / quantity);
 			askPrice = AttaMath.round(askPrice, currency.getPriceRound() == null ? AttaConstant.MAX_LOT : currency.getPriceRound());
 
-			AttaUtility.writeLogInfo(logger, currency, String.format("[%s|%s] Sell price become %.8f", currency.getId(), currency.getMarket(), askPrice));
+			AttaUtility.writeLogWarn(logger, currency, String.format("[Unexpect] [%s|%s] Sell price become %.8f", currency.getId(), currency.getMarket(), askPrice));
 		}
 
 		sellLimit(exchangeService.getMarketService(), currency, quantity, askPrice, currentOrder);
@@ -112,6 +153,12 @@ public class BidAskHandlerSimple implements BidAskHandler {
 
 	private void logicBuy(ExchangePredictorWrapper exchangePredictor, CurrencySetting currency, ExchangeServiceHandler exchangeService, PredictParams predictParams, boolean isBuyImmediately) throws ExchangeServiceRequestFailException {
 		IOrder currentOrder = predictParams == null ? null : predictParams.getCurrentOrder();
+
+		if (currency.isStopBid()) {
+			AttaUtility.writeLogInfo(logger, currency, String.format("Stop bid order : %s", currentOrder));
+			currency.setActive(false);
+			return;
+		}
 
 		// we can't buy if last order is not complete or last order is BUY_LIMIT type
 		if (currentOrder != null && currentOrder.isOrderCompleted() && currentOrder.isBuyOrder()) {
@@ -129,15 +176,24 @@ public class BidAskHandlerSimple implements BidAskHandler {
 			bidPrice = exchangePredictor.getBidPredictor().predict(predictParams);
 		}
 
-		// bid price is invalid or last ask price < current bid price
-		if (bidPrice < 0 || (currentOrder != null && currentOrder.getLimit() <= bidPrice)) {
-			return;
-		}
-
 		double quantity = currency.getBudget() / bidPrice;
 
 		quantity = AttaMath.roundQty(currency, quantity);
 		bidPrice = AttaMath.roundPrice(currency, bidPrice);
+		
+		if (bidPrice < 0 ) {
+			return;
+		}
+
+		if (currentOrder != null && currentOrder.getLimit() * currentOrder.getQuantity() <= bidPrice * quantity) {
+			AttaUtility.writeLogWarn(logger, currency, String.format("[Unexpect] Last sell price <= buy price [%f > %f]; %s", currentOrder.getLimit(), bidPrice, currentOrder));
+			return;
+		}
+
+		if (bidPrice > predictParams.getTicker().getBid()) {
+			AttaUtility.writeLogWarn(logger, currency, String.format("[Unexpect] Bid Order will be cancelled. Because Bid price > market price [%f > %f]; %s", bidPrice, predictParams.getTicker().getBid(), currentOrder));
+			return;
+		}
 
 		buyLimit(exchangeService.getMarketService(), currency, quantity, bidPrice, currentOrder);
 	}

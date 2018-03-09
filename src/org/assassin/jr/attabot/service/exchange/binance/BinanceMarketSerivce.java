@@ -10,6 +10,8 @@ import org.assassin.jr.attabot.service.exchange.ExchangeMarketService;
 import com.binance.api.client.domain.TimeInForce;
 import com.binance.api.client.domain.account.NewOrder;
 import com.binance.api.client.domain.account.NewOrderResponse;
+import com.binance.api.client.domain.account.request.CancelOrderRequest;
+import com.binance.api.client.exception.BinanceApiException;
 
 public class BinanceMarketSerivce extends BinanceExchangeStandardService implements ExchangeMarketService {
 	public BinanceMarketSerivce(String apiKey, String apiKeySerect) {
@@ -35,8 +37,13 @@ public class BinanceMarketSerivce extends BinanceExchangeStandardService impleme
 	}
 
 	@Override
-	public boolean cancel(String uuid) throws ExchangeServiceRequestFailException {
-		throw new UnsupportedOperationException("cancel");
+	public boolean cancel(String market, String uuid) throws ExchangeServiceRequestFailException {
+		try {
+			getBnApiclient().cancelOrder(new CancelOrderRequest(market, uuid));
+			return true;
+		} catch (BinanceApiException e) {
+			throw new ExchangeServiceRequestFailException(e.getMessage());
+		}
 	}
 
 	@Override

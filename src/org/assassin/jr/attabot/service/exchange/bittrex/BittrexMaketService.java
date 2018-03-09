@@ -39,7 +39,7 @@ public class BittrexMaketService extends BittrexExchangeStandardService implemen
 	}
 
 	@Override
-	public boolean cancel(String uuid) throws ExchangeServiceRequestFailException {
+	public boolean cancel(String market, String uuid) throws ExchangeServiceRequestFailException {
 		String params = String.format("uuid=%s", uuid);
 		StandardHttpResult bresult = getDataByGetMethodWithAPIKey(AttaConstant.API_BITTEX_V1_MARKET_CANCEL, params);
 		return bresult.isSucess();

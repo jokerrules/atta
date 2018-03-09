@@ -7,7 +7,6 @@ import org.assassin.jr.attabot.config.CurrencySetting;
 import org.assassin.jr.attabot.config.PredictType;
 import org.assassin.jr.attabot.exception.ExchangeServiceRequestFailException;
 import org.assassin.jr.attabot.pojo.exchange.ITick;
-import org.assassin.jr.attabot.pojo.exchange.ITicker;
 import org.assassin.jr.attabot.pojo.exchange.TickInterval;
 import org.assassin.jr.attabot.service.exchange.ExchangeServiceHandler;
 import org.assassin.jr.attabot.service.predictor.ExchangePredictorWrapper;
@@ -44,9 +43,6 @@ public class PredictorBollingerBand implements PredictorStandard {
 	@Override
 	public PredictParams createPredictParam(ExchangeServiceHandler exchangeService, CurrencySetting currencySetting) throws ExchangeServiceRequestFailException {
 		PredictParams params = new PredictParams();
-
-		ITicker ticker = exchangeService.getPublicService().getTicker(currencySetting.getMarket());
-		params.setTicker(ticker);
 
 		List<ITick> lstTick = exchangeService.getPublicService().getTicks(currencySetting.getMarket(), TickInterval.THIRTY_MIN);
 		params.setTicks(lstTick);

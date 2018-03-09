@@ -10,7 +10,7 @@ public interface ExchangeMarketService {
 
 	public String sellLimit(String market, double quantity, double rate) throws ExchangeServiceRequestFailException;
 
-	public boolean cancel(String uuid) throws ExchangeServiceRequestFailException;
+	public boolean cancel(String market, String uuid) throws ExchangeServiceRequestFailException;
 
 	public List<IOrder> getOpenOrders(String market) throws ExchangeServiceRequestFailException;
 }

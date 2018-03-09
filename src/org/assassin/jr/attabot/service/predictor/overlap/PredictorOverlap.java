@@ -5,7 +5,6 @@ import java.util.Map;
 import org.assassin.jr.attabot.config.CurrencySetting;
 import org.assassin.jr.attabot.config.PredictType;
 import org.assassin.jr.attabot.exception.ExchangeServiceRequestFailException;
-import org.assassin.jr.attabot.pojo.exchange.ITicker;
 import org.assassin.jr.attabot.service.exchange.ExchangeServiceHandler;
 import org.assassin.jr.attabot.service.predictor.ExchangePredictorWrapper;
 import org.assassin.jr.attabot.service.predictor.PredictParams;
@@ -25,11 +24,6 @@ public class PredictorOverlap implements PredictorStandard {
 
 	@Override
 	public PredictParams createPredictParam(ExchangeServiceHandler exchangeServicehandler, CurrencySetting currencySetting) throws ExchangeServiceRequestFailException {
-		PredictParams params = new PredictParams();
-
-		ITicker ticker = exchangeServicehandler.getPublicService().getTicker(currencySetting.getMarket());
-		params.setTicker(ticker);
-
-		return params;
+		return new PredictParams();
 	}
 }

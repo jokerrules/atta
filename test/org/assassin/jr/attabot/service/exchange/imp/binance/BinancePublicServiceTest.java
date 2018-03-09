@@ -7,9 +7,15 @@ import org.junit.Test;
 
 public class BinancePublicServiceTest {
 
-	@Test
+	//@Test
 	public void testGetTick() throws ExchangeServiceRequestFailException {
 		BinancePublicService bs = new BinancePublicService(BinaceApiKey.apiKey, BinaceApiKey.apiKeySerect);
 		System.out.println(bs.getTicks("ETHBTC", TickInterval.THIRTY_MIN));
+	}
+	
+	@Test
+	public void testGetTicker() throws ExchangeServiceRequestFailException {
+		BinancePublicService bs = new BinancePublicService(BinaceApiKey.apiKey, BinaceApiKey.apiKeySerect);
+		System.out.println(bs.getTicker("XVGBTC"));
 	}
 }

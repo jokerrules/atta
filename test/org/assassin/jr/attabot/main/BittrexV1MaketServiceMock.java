@@ -35,7 +35,7 @@ public class BittrexV1MaketServiceMock extends BittrexExchangeStandardService im
 	}
 
 	@Override
-	public boolean cancel(String uuid) throws ExchangeServiceRequestFailException {
+	public boolean cancel(String market, String uuid) throws ExchangeServiceRequestFailException {
 		return false;
 	}
 

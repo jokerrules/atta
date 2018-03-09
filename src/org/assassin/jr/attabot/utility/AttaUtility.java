@@ -99,6 +99,10 @@ public class AttaUtility {
 		writeLogDebug(log4jLogger, DynamicLogger.getInstance().getLogger(currency.getId()), currency.getId(), currency.getMarket(), message);
 	}
 
+	public static void writeLogWarn(Logger log4jLogger, CurrencySetting currency, String message) {
+		writeLogWarn(log4jLogger, DynamicLogger.getInstance().getLogger(currency.getId()), currency.getId(), currency.getMarket(), message);
+	}
+
 	public static void writeLogError(Logger log4jLogger, CurrencySetting currency, String message) {
 		writeLogError(log4jLogger, DynamicLogger.getInstance().getLogger(currency.getId()), currency.getId(), currency.getMarket(), message);
 	}
@@ -113,6 +117,12 @@ public class AttaUtility {
 		String content = String.format("[%s|%s] %s", currencyId, market, message);
 		logger.debug(content);
 		dynamicLogger.debug(content);
+	}
+
+	public static void writeLogWarn(Logger log4jLogger, LoggerStandard dynamicLogger, String currencyId, String market, String message) {
+		String content = String.format("[%s|%s] %s", currencyId, market, message);
+		logger.warn(content);
+		dynamicLogger.warn(content);
 	}
 
 	public static void writeLogError(Logger log4jLogger, LoggerStandard dynamicLogger, String currencyId, String market, String message) {

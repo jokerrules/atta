@@ -10,5 +10,7 @@ public interface LoggerStandard {
 
 	public void error(Exception e);
 
+	public void warn(String message);
+
 	public void setOuputConsole(boolean isShow);
 }
