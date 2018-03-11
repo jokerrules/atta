@@ -241,6 +241,25 @@
 									"avgPrice"		:  0.10050,
 									"fragmentType"	: "BID_PERCENT"
 								}
+		},
+		{
+			"exchangeMarket": "BINANCE",
+			"id"			: "BN-ETH-FRZ-AT8",
+			"isActive"		: true,
+			"market"		: "ETHBTC",
+			"budget"		: 0.0021,
+			"quantityRound"	: 3,
+			"priceRound"	: 6,
+			"updateTime"	: 3210,
+			"playOptions"	:	{ "typeName" : "FREEZE" },
+			"fragment"		: 	{
+									"prefixId"			: "1802110121",
+									"profits"			: [0.0013, 0.0013],
+									"bidRates"			: [0.0001, 0.0002],
+									"bidRatesCondBelow"	: [0.00009, 0.00009],
+									"avgPrice"			: 0.078822,
+									"fragmentType"		: "BID_PERCENT"
+								}
 		}
 	]
 }

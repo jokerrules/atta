@@ -4,10 +4,6 @@ import java.util.Map;
 
 import org.assassin.jr.attabot.utility.AttaConstant;
 
-/**
- * @author NamNguyen
- *
- */
 public class CurrencySetting {
 	private String id;
 	private boolean isActive;
@@ -18,6 +14,7 @@ public class CurrencySetting {
 	private double profitRate;
 	private double reBidRate;
 	private Double bidPriceCond;
+	private Double bidPriceCondBelow;
 	private Integer quantityRound;
 	private Integer priceRound;
 	private Double tradingFee;
@@ -278,6 +275,14 @@ public class CurrencySetting {
 			setStopBid(true);
 		}
 		this.cancelBidOrder = cancelBidOrders;
+	}
+
+	public Double getBidPriceCondBelow() {
+		return bidPriceCondBelow;
+	}
+
+	public void setBidPriceCondBelow(Double bidPriceCondBelow) {
+		this.bidPriceCondBelow = bidPriceCondBelow;
 	}
 
 	@Override

@@ -169,6 +169,10 @@ public class BidAskHandlerSimple implements BidAskHandler {
 			return;
 		}
 
+		if (currency.getBidPriceCondBelow() != null && predictParams.getTicker().getBid() > currency.getBidPriceCondBelow()) {
+			return;
+		}
+
 		double bidPrice = currency.getDebutBid();
 
 		// force buy now

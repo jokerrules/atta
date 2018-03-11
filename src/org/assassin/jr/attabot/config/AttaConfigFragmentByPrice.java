@@ -10,7 +10,7 @@ public class AttaConfigFragmentByPrice extends AttaConfigFragmentDefault {
 	@Override
 	protected boolean validate(CurrencySetting currency) {
 		CurrencyFragment fgm = currency.getFragment();
-		if (fgm.getFragmentType() != CurrencyFragmentType.BID_PERCENT) {
+		if (fgm.getFragmentType() != CurrencyFragmentType.BID_PRICE) {
 			return false;
 		}
 
@@ -38,6 +38,7 @@ public class AttaConfigFragmentByPrice extends AttaConfigFragmentDefault {
 		CurrencyFragment fgm = currency.getFragment();
 		Double[] bidPrices = fgm.getBidPrices();
 		Double[] bidPriceConds = fgm.getBidPricesCond();
+		Double[] bidPriceCondBelows = fgm.getBidPricesCondBelow();
 		Double[] profits = fgm.getProfits();
 		int priceRound = currency.getPriceRound() == null ? AttaConstant.MAX_LOT : currency.getPriceRound();
 
@@ -50,6 +51,10 @@ public class AttaConfigFragmentByPrice extends AttaConfigFragmentDefault {
 
 			if (bidPriceConds != null) {
 				newSetting.setBidPriceCond(bidPriceConds[i]);
+			}
+
+			if (bidPriceCondBelows != null) {
+				newSetting.setBidPriceCondBelow(bidPriceCondBelows[i]);
 			}
 
 			lstNewCurrencyItem.add(newSetting);

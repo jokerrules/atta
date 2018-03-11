@@ -10,6 +10,8 @@ public class CurrencyFragment {
 	private Double[] bidPrices;
 	private Double[] bidRatesCond;
 	private Double[] bidPricesCond;
+	private Double[] bidPricesCondBelow;
+	private Double[] bidRatesCondBelow;
 	private Double minProfit;
 
 	@Override
@@ -106,4 +108,19 @@ public class CurrencyFragment {
 		this.bidPricesCond = bidPricesCond;
 	}
 
+	public Double[] getBidPricesCondBelow() {
+		return bidPricesCondBelow;
+	}
+
+	public void setBidPricesCondBelow(Double[] bidPricesCondBelow) {
+		this.bidPricesCondBelow = bidPricesCondBelow;
+	}
+
+	public Double[] getBidRatesCondBelow() {
+		return bidRatesCondBelow;
+	}
+
+	public void setBidRatesCondBelow(Double[] bidRatesCondBelow) {
+		this.bidRatesCondBelow = bidRatesCondBelow;
+	}
 }

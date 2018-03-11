@@ -39,6 +39,7 @@ public class AttaConfigFragmentByPercent extends AttaConfigFragmentDefault {
 
 		Double[] bidRates = fgm.getBidRates();
 		Double[] bidRatesConds = fgm.getBidRatesCond();
+		Double[] bidRatesCondBelows = fgm.getBidRatesCondBelow();
 		Double[] profits = fgm.getProfits();
 
 		double avgPrice = fgm.getAvgPrice();
@@ -53,6 +54,10 @@ public class AttaConfigFragmentByPercent extends AttaConfigFragmentDefault {
 
 			if (bidRatesConds != null) {
 				newSetting.setBidPriceCond(AttaMath.round(avgPrice * (1 - bidRatesConds[i]), priceRound));
+			}
+
+			if (bidRatesCondBelows != null) {
+				newSetting.setBidPriceCondBelow(AttaMath.round(avgPrice * (1 - bidRatesCondBelows[i]), priceRound));
 			}
 
 			lstNewCurrencyItem.add(newSetting);
